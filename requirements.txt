@@ -1,0 +1,6 @@
+langchain
+langchainhub
+langchain_openai
+black
+pandas
+
