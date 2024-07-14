@@ -1,5 +1,6 @@
 from dotenv import load_dotenv
 from langchain import hub
+from langchain_experimental.agents import create_csv_agent
 from langchain_openai import ChatOpenAI
 from langchain.agents import create_react_agent, AgentExecutor
 from langchain_experimental.tools import PythonREPLTool
@@ -22,7 +23,7 @@ if __name__ == "__main__":
     agent = create_react_agent(
         prompt=base_prompt,
         llm=ChatOpenAI(temperature=0, model="gpt-4-turbo"),
-        tools=tools
+        tools=tools,
     )
 
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
@@ -37,13 +38,26 @@ if __name__ == "__main__":
     #     }
     # )
 
-    agent_executor.invoke(
+    # agent_executor.invoke(
+    #     input={
+    #         "input": """
+    #         Generate and save in the current directory 15 QR codes
+    #         that point to www.Github.com or https://gist.github.com,
+    #         assuming you have the qrcode package installed already.
+    #         """,
+    #         "instructions": instructions,  # Add the instructions variable here
+    #     }
+    # )
+
+    csv_agent = create_csv_agent(
+        llm=ChatOpenAI(temperature=0, model="gpt-4-turbo"),
+        path="Car_details.csv",
+        verbose=True,
+        allow_dangerous_code=True
+    )
+
+    csv_agent.invoke(
         input={
-            "input": """
-            Generate and save in the current directory 15 QR codes
-            that point to www.Github.com or https://gist.github.com,
-            assuming you have the qrcode package installed already.
-            """,
-            "instructions": instructions  # Add the instructions variable here
+            "input":"How many car are there Hyundai name"
         }
     )
